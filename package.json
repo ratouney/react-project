@@ -9,7 +9,7 @@
     "web": "expo start --web",
     "eject": "expo eject",
     "lint": "eslint --ext .tsx .",
-    "lintfix": "eslint . --fix",
+    "lintfix": "eslint --ext .tsx . --fix",
     "prepare": "husky install"
   },
   "dependencies": {
