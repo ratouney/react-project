@@ -5,9 +5,22 @@ import {
 } from 'react-native';
 
 export type Props = {
-    name: string;
-    baseEnthusiasmLevel?: number;
+  name: string;
+  baseEnthusiasmLevel?: number;
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  greeting: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    margin: 16,
+  },
+});
 
 const Hello: React.FC<Props> = ({
   name,
@@ -50,24 +63,11 @@ const Hello: React.FC<Props> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  greeting: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    margin: 16,
-  },
-});
-
 export default function App() {
   return (
     <View style={styles.container}>
-      <Hello />
-      <StatusBar style="auto" />
+      <Hello name="world" />
+      <StatusBar />
     </View>
   );
 }
