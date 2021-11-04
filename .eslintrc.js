@@ -12,6 +12,12 @@ module.exports = {
     ecmaVersion: 13,
     sourceType: 'module',
   },
+  ignorePatterns: [
+    '/node_modules/**/*',
+    'babel.config.js', // Ignore built files.
+  ],
   plugins: ['react', '@typescript-eslint'],
-  rules: {},
+  rules: {
+    'react/jsx-filename-extension': [1, { extensions: ['.tsx'] }],
+  },
 };
