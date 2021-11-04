@@ -1,6 +1,7 @@
 import {StatusBar} from 'expo-status-bar';
-import React from 'react';
-import {StyleSheet, Text, View, Button} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {StyleSheet, Text, View, Button, TouchableOpacity} from 'react-native';
+import { Camera } from 'expo-camera';
 
 export type Props = {
     name: string;
@@ -25,13 +26,28 @@ const Hello: React.FC<Props> = ({
     const getExclamationMarks = (numChars: number) =>
         numChars > 0 ? Array(numChars + 1).join('!') : '';
 
+		const [hasPermission, setHasPermission] = useState(null);
+		const [type, setType] = useState(Camera.Constants.Type.back);
+
+		useEffect(() => {
+	    (async () => {
+	      const { status } = await Camera.requestCameraPermissionsAsync();
+	      setHasPermission(status === 'granted');
+	    })();
+  	}, []);
+
+		async function takePic(camera) {
+			let photo = await camera.takePictureAsync();
+			console.log("photo: ", photo)
+		}
+
     return (
         <View style={styles.container}>
             <Text style={styles.greeting}>
                 Hello {name}
                 {getExclamationMarks(enthusiasmLevel)}
             </Text>
-            <View>
+            <View style={{flex: 0.2}}>
                 <Button
                     title="Increase enthusiasm"
                     accessibilityLabel="increment"
@@ -45,6 +61,24 @@ const Hello: React.FC<Props> = ({
                     color="red"
                 />
             </View>
+						<Camera style={{flex: 1, width: "100%"}} type={type} ref={ref => {this.camera = ref;}}>
+			        <View>
+			          <TouchableOpacity
+			            onPress={() => {
+			              setType(
+			                type === Camera.Constants.Type.back
+			                  ? Camera.Constants.Type.front
+			                  : Camera.Constants.Type.back
+			              );
+			            }}>
+			            <Text style={styles.text}> Flip </Text>
+			          </TouchableOpacity>
+								<TouchableOpacity
+			            onPress={() => {takePic(this.camera)}}>
+			            <Text style={styles.text}> Take picture </Text>
+			          </TouchableOpacity>
+			        </View>
+			      </Camera>
         </View>
     );
 };
@@ -53,7 +87,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center'
+        justifyContent: 'center',
+				width: "100%"
     },
     greeting: {
         fontSize: 20,
