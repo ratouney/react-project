@@ -1,15 +1,15 @@
 export type AppState = {
-    session : Session
-}
+  session : Session
+};
 
 export type Session = {
-    user?: User;
-    connectedAt: number;
-    admin: boolean;
-}
+  user?: User;
+  connectedAt: number;
+  admin: boolean;
+};
 
 export type User = {
-    name: string;
-    email: string;
-    profileIcon: string;
-}
+  name: string;
+  email: string;
+  profileIcon: string;
+};
