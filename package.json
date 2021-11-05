@@ -8,8 +8,8 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "lint": "eslint --ext .tsx .",
-    "lintfix": "eslint --ext .tsx . --fix",
+    "lint": "eslint --ext .tsx,.ts .",
+    "lintfix": "eslint --ext .tsx,.ts . --fix",
     "prepare": "husky install",
     "config:env": "node --trace-warnings .config/env-managment/config.js && cp .config/env-managment/dev.env .env"
   },
@@ -24,6 +24,10 @@
     "react-dom": "17.0.1",
     "react-native": "0.64.2",
     "react-native-web": "0.17.1",
+    "react-redux": "^7.2.6",
+    "redux": "^4.1.2",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.4.0",
     "wait-for-user-input": "^1.0.0"
   },
   "devDependencies": {
