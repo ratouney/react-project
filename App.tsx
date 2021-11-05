@@ -1,9 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import {
-  StyleSheet, Text, View, Button, TouchableOpacity,
+  StyleSheet, Text, View, Button, TouchableOpacity, Image,
 } from 'react-native';
 import { Camera } from 'expo-camera';
+
+const noFlash = require('./assets/no-flash.png');
+const withFlash = require('./assets/flash.png');
+const flip = require('./assets/flip.png');
+const diag = require('./assets/diaphragm.png');
 
 export type Props = {
   name: string;
@@ -15,6 +20,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   greeting: {
     fontSize: 20,
@@ -24,22 +30,12 @@ const styles = StyleSheet.create({
 });
 
 const Hello: React.FC<Props> = ({
-  name,
-  baseEnthusiasmLevel = 0,
 }) => {
-  const [enthusiasmLevel, setEnthusiasmLevel] = React.useState(
-    baseEnthusiasmLevel,
-  );
-
-  const onIncrement = () => setEnthusiasmLevel(enthusiasmLevel + 1);
-  const onDecrement = () => setEnthusiasmLevel(
-    enthusiasmLevel > 0 ? enthusiasmLevel - 1 : 0,
-  );
-
-  const getExclamationMarks = (numChars: number) => (numChars > 0 ? Array(numChars + 1).join('!') : '');
-
   const [hasPermission, setHasPermission] = useState(null);
   const [type, setType] = useState(Camera.Constants.Type.back);
+  const [flash, setFlash] = useState(Camera.Constants.FlashMode.off);
+  const [picture, setPicture] = useState(null);
+  const [flashPic, setFlashPic] = useState(noFlash);
 
   useEffect(() => {
     (async () => {
@@ -50,51 +46,68 @@ const Hello: React.FC<Props> = ({
 
   async function takePic(camera) {
     const photo = await camera.takePictureAsync();
-    console.log('photo: ', photo);
+    setPicture(photo.uri);
   }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.greeting}>
-        Hello
-        {' '}
-        {name}
-        {getExclamationMarks(enthusiasmLevel)}
-      </Text>
-      <View style={{ flex: 0.2 }}>
-        <Button
-          title="Increase enthusiasm"
-          accessibilityLabel="increment"
-          onPress={onIncrement}
-          color="blue"
-        />
-        <Button
-          title="Decrease enthusiasm"
-          accessibilityLabel="decrement"
-          onPress={onDecrement}
-          color="red"
-        />
+      <View style={{ flex: 1, width: '100%' }}>
+        <Camera
+          style={{
+            flex: 1, width: '100%', alignItems: 'center', justifyContent: 'flex-end',
+          }}
+          type={type}
+          flashMode={flash}
+          ref={(ref) => { camera = ref; }}
+        >
+          <View style={{
+            flex: 1, width: '100%', alignItems: 'flex-end', justifyContent: 'flex-start',
+          }}
+          >
+            <TouchableOpacity
+              style={{ flex: 0.15, width: 50, alignItems: 'center' }}
+              onPress={() => {
+                setType(
+                  type === Camera.Constants.Type.back
+                    ? Camera.Constants.Type.front
+                    : Camera.Constants.Type.back,
+                );
+              }}
+            >
+              <Image
+                style={{ height: 50, width: 50, marginTop: 20 }}
+                source={flip}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{ flex: 0.15, width: 50, alignItems: 'center' }}
+              onPress={() => {
+                setFlash(
+                  flash === Camera.Constants.FlashMode.off
+                    ? Camera.Constants.FlashMode.on
+                    : Camera.Constants.FlashMode.off,
+                );
+                setFlashPic(
+                  flashPic === noFlash
+                    ? withFlash
+                    : noFlash,
+                );
+              }}
+            >
+              <Image
+                style={{ height: 50, width: 50, marginTop: 20 }}
+                source={flashPic}
+              />
+            </TouchableOpacity>
+          </View>
+          <TouchableOpacity style={{ flex: 0.15, width: 75, alignItems: 'center' }} onPress={() => { takePic(camera); }}>
+            <Image
+              style={{ height: 75, width: 75, marginTop: 5 }}
+              source={diag}
+            />
+          </TouchableOpacity>
+        </Camera>
       </View>
-      <Camera style={{ flex: 1, width: '100%' }} type={type} ref={(ref) => { camera = ref; }}>
-        <View>
-          <TouchableOpacity
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back,
-              );
-            }}
-          >
-            <Text style={styles.text}> Flip </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => { takePic(camera); }}
-          >
-            <Text style={styles.text}> Take picture </Text>
-          </TouchableOpacity>
-        </View>
-      </Camera>
     </View>
   );
 };
