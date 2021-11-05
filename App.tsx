@@ -8,12 +8,13 @@ import { Dispatch } from 'redux';
 import store from './src/state/store';
 
 import { AppState, Session, User } from './src/state/types';
-import { setCurrentUser, clearCurrentUser } from './src/state/session/actions';
+import { setCurrentUser, clearCurrentUser, getRandomUser } from './src/state/session/actions';
 
 export type Props = {
   session: Session;
   onSetUser: () => void;
   onClearUser: () => void;
+  onGetRandomUser: () => void;
 };
 
 const styles = StyleSheet.create({
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
 const HelloBase: React.FC<Props> = ({
   session,
   onSetUser,
-  onClearUser,
+  onClearUser, onGetRandomUser,
 }) => (
   <View style={styles.container}>
     <Text style={styles.greeting}>
@@ -43,10 +44,16 @@ const HelloBase: React.FC<Props> = ({
     </Text>
     <View>
       <Button
-        title="Increase enthusiasm"
+        title="Load predefined"
         accessibilityLabel="increment"
         onPress={onSetUser}
         color="blue"
+      />
+      <Button
+        title="Get Random user"
+        accessibilityLabel="decrement"
+        onPress={onGetRandomUser}
+        color="purple"
       />
       <Button
         title="Decrease enthusiasm"
@@ -73,6 +80,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   },
   onClearUser: () => {
     dispatch(clearCurrentUser());
+  },
+  onGetRandomUser: () => {
+    dispatch(getRandomUser());
   },
 });
 
