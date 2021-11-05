@@ -3,10 +3,17 @@ import React from 'react';
 import {
   StyleSheet, Text, View, Button,
 } from 'react-native';
+import { Provider, connect } from 'react-redux';
+import { Dispatch } from 'redux';
+import store from './src/state/store';
+
+import { AppState, Session, User } from './src/state/types';
+import { setCurrentUser, clearCurrentUser } from './src/state/session/actions';
 
 export type Props = {
-  name: string;
-  baseEnthusiasmLevel?: number;
+  session: Session;
+  onSetUser: () => void;
+  onClearUser: () => void;
 };
 
 const styles = StyleSheet.create({
@@ -22,52 +29,65 @@ const styles = StyleSheet.create({
   },
 });
 
-const Hello: React.FC<Props> = ({
-  name,
-  baseEnthusiasmLevel = 0,
-}) => {
-  const [enthusiasmLevel, setEnthusiasmLevel] = React.useState(
-    baseEnthusiasmLevel,
-  );
-
-  const onIncrement = () => setEnthusiasmLevel(enthusiasmLevel + 1);
-  const onDecrement = () => setEnthusiasmLevel(
-    enthusiasmLevel > 0 ? enthusiasmLevel - 1 : 0,
-  );
-
-  const getExclamationMarks = (numChars: number) => (numChars > 0 ? Array(numChars + 1).join('!') : '');
-
-  return (
-    <View style={styles.container}>
-      <Text style={styles.greeting}>
-        Hello
-        {' '}
-        {name}
-        {getExclamationMarks(enthusiasmLevel)}
-      </Text>
-      <View>
-        <Button
-          title="Increase enthusiasm"
-          accessibilityLabel="increment"
-          onPress={onIncrement}
-          color="blue"
-        />
-        <Button
-          title="Decrease enthusiasm"
-          accessibilityLabel="decrement"
-          onPress={onDecrement}
-          color="red"
-        />
-      </View>
+const HelloBase: React.FC<Props> = ({
+  session,
+  onSetUser,
+  onClearUser,
+}) => (
+  <View style={styles.container}>
+    <Text style={styles.greeting}>
+      Hello
+      {' '}
+      {session.user === undefined ? 'Nobody' : session.user?.name}
+      {/* getExclamationMarks(enthusiasmLevel) */}
+    </Text>
+    <View>
+      <Button
+        title="Increase enthusiasm"
+        accessibilityLabel="increment"
+        onPress={onSetUser}
+        color="blue"
+      />
+      <Button
+        title="Decrease enthusiasm"
+        accessibilityLabel="decrement"
+        onPress={onClearUser}
+        color="red"
+      />
     </View>
-  );
-};
+  </View>
+);
+
+const mapStateToPros = (state: AppState) => ({
+  session: state.session,
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  onSetUser: () => {
+    const ud: User = {
+      name: 'Ratouney',
+      email: 'nothjsjkfds',
+      profileIcon: 'https://static.wikia.nocookie.net/frstarwars/images/d/d9/Grievous_t%C3%AAte.jpg/revision/latest?cb=20160514112949',
+    };
+    dispatch(setCurrentUser(ud));
+  },
+  onClearUser: () => {
+    dispatch(clearCurrentUser());
+  },
+});
+
+const Hello = connect(
+  mapStateToPros,
+  mapDispatchToProps,
+)(HelloBase);
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Hello name="world" />
-      <StatusBar />
-    </View>
+    <Provider store={store}>
+      <View style={styles.container}>
+        <Hello />
+        <StatusBar />
+      </View>
+    </Provider>
   );
 }
