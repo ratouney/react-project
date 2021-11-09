@@ -1,4 +1,7 @@
 import { Dispatch } from 'redux';
+import {
+  getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile,
+} from 'firebase/auth';
 import { User } from '../types';
 
 export enum SessionActionTypes {
@@ -60,5 +63,46 @@ export function getRandomUser() {
       type: SessionActionTypes.SET_CURRENT_USER,
       userData: ud,
     });
+  };
+}
+
+export function SignUp(email: string, password: string, name: string) {
+  return async (dispatch: Dispatch) => {
+    const auth = getAuth();
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(userCredential.user, {
+      displayName: name,
+    });
+    return dispatch({
+      type: SessionActionTypes.SET_CURRENT_USER,
+      userData: {
+        name: userCredential.user.displayName,
+        email: userCredential.user.email,
+        profileIcon: userCredential.user.photoURL,
+      },
+    });
+  };
+}
+
+export function SingIn(email: string, password: string) {
+  return async (dispatch: Dispatch) => {
+    const auth = getAuth();
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    dispatch({
+      type: SessionActionTypes.SET_CURRENT_USER,
+      userData: {
+        name: userCredential.user.displayName,
+        email: userCredential.user.email,
+        profileIcon: userCredential.user.photoURL,
+      },
+    });
+  };
+}
+
+export function SignOut() {
+  return async (dispatch: Dispatch) => {
+    const auth = getAuth();
+    await signOut(auth);
+    dispatch(clearCurrentUser());
   };
 }
