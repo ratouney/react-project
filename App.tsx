@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { initializeApp } from 'firebase/app';
 import Constants from 'expo-constants';
 import LoginPage from './src/views/LoginPage';
+import CameraPage from './src/views/Camera';
 import store from './src/state/store';
 import Profile from './Profile';
 import Nameplate from './Nameplate';
@@ -35,6 +36,7 @@ export default function App() {
           <Stack.Screen name="SignUp" component={SignUpPage} />
           <Stack.Screen name="Profile" component={Profile} />
           <Stack.Screen name="Nameplate" component={Nameplate} />
+          <Stack.Screen name="Camera" component={CameraPage} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

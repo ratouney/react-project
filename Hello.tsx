@@ -6,6 +6,7 @@ import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { AppState, Session, User } from './src/state/types';
 import { clearCurrentUser, getRandomUser, setCurrentUser } from './src/state/session/actions';
+import { DbTest } from './src/state/session/actions';
 
 type Props = {
   navigation: any
@@ -35,13 +36,14 @@ const HelloBase: React.FC<Props> = ({
   session,
   onSetUser,
   onClearUser,
+  onTest,
   onGetRandomUser,
   navigation,
 }) => {
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Button onPress={() => onGetRandomUser()} title="Get User" />
+        <Button onPress={() => onGetRandomUser()} title="Get ser" />
       ),
       headerStyle: styles.coloredHeader,
     });
@@ -83,6 +85,12 @@ const HelloBase: React.FC<Props> = ({
           onPress={onClearUser}
           color="red"
         />
+        <Button
+          title="Terst"
+          accessibilityLabel="decrement"
+          onPress={() => (navigation.navigate('Camera'))}
+          color="red"
+        />
       </View>
     </View>
   );
@@ -106,7 +114,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   },
   onGetRandomUser: () => {
     dispatch(getRandomUser());
-  },
+  }
 });
 
 const Hello = connect(

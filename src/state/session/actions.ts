@@ -1,3 +1,12 @@
+/**
+ * @Author: root
+ * @Date:   2021-12-07T13:19:06+01:00
+ * @Last modified by:   root
+ * @Last modified time: 2021-12-07T15:02:32+01:00
+ */
+
+
+
 import { Dispatch } from 'redux';
 import {
   getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile,
@@ -9,6 +18,12 @@ export enum SessionActionTypes {
   CLEAR_CURRENT_USER = 'SESSION/CLEAR_CURRENT_USER',
   GET_RANDOM_USER = 'SESSION/GET_RANDOM_USER',
   SET_USER_NAME = 'SESSION/SET_USER_NAME',
+  SET_PICTURE = 'SESSION/SET_PICTURE',
+}
+
+export type setPictureAction = {
+    type: string,
+    userPicture: string,
 }
 
 export type SetCurrentUserAction = {
@@ -34,7 +49,13 @@ export type SessionAction =
   SetCurrentUserAction
   | ClearCurrentUserAction
   | GetRandomUserAction
-  | SetUserNameAction;
+  | SetUserNameAction
+  | setPictureAction;
+
+export const setPicture = (userPicture: string):setPictureAction => ({
+    type: SessionActionTypes.SET_PICTURE,
+    userPicture
+})
 
 export const setCurrentUser = (userData: User): SetCurrentUserAction => ({
   type: SessionActionTypes.SET_CURRENT_USER,
@@ -68,6 +89,7 @@ export function getRandomUser() {
 
 export function SignUp(email: string, password: string, name: string) {
   return async (dispatch: Dispatch) => {
+    console.log("email: |", email, "| pass: ", password, " name: ", name)
     const auth = getAuth();
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     await updateProfile(userCredential.user, {
@@ -97,6 +119,12 @@ export function SingIn(email: string, password: string) {
       },
     });
   };
+}
+
+export async function DbTest() {
+  console.log("hello oskour")
+  console.log('pls HELP')
+  console.log('pls HELP2')
 }
 
 export function SignOut() {

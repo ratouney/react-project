@@ -114,8 +114,8 @@ const mapStateToPros = (state: AppState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  onSignUp: (email: string, password: string) => {
-    dispatch(SignUp(email, password));
+  onSignUp: (email: string, password: string, name: string) => {
+    dispatch(SignUp(email, password, name));
   },
 });
 
